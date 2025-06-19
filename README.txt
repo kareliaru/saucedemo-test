@@ -1,6 +1,6 @@
  saucedemo-test
 
-Автоматизированные end-to-end тесты для сайта [saucedemo.com](https://www.saucedemo.com), написанные с использованием [Playwright](https://playwright.dev/).  
+Автоматизированные end-to-end тесты для сайта https://www.saucedemo.com, написанные с использованием Playwright (https://playwright.dev/).  
 Проект построен по паттерну **Page Object**, с поддержкой запуска в нескольких браузерах: **Chromium**, **Firefox** и **WebKit**.
 
 ---
@@ -42,7 +42,7 @@ npx playwright test
 
 npx playwright test --project=chromium  //отдельно Chrome
 npx playwright test --project=firefox   //отдельно Firefox
-npx playwright test --project=webkit
+npx playwright test --project=webkit	// отдельно Webkit
 
 
 6. Отчет автоматически генерируется в html и может быть открыт в браузере командой:
