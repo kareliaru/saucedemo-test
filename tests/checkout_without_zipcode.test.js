@@ -25,5 +25,5 @@ test('Оформление заказа без указания почтовог
     await expect(errorMessage).toBeVisible();
     await expect(errorMessage).toHaveText('Error: Postal Code is required');
     //скриншот (опционально)
-    await page.locator('body').screenshot({path: 'site_2.png'})
+    //await page.locator('body').screenshot({path: 'site_2.png'})
 });
