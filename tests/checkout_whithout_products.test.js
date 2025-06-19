@@ -19,5 +19,5 @@ test('Оформление заказа с пустой корзиной', async
     await expect(errorMessage).toBeVisible();
     await expect(errorMessage).toHaveText('Error: Add items to cart!');
     //скриншот (опционально)
-    await page.locator('body').screenshot({path: 'site_3.png'})
+    //await page.locator('body').screenshot({path: 'site_3.png'})
 });
