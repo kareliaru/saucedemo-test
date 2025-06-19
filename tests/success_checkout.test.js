@@ -33,5 +33,5 @@ test('Успешное оформление заказа', async ({ page }) => {
     // проверяем появление заголовка "Успешный заказ"
     await expect(page.locator('[data-test="complete-header"]')).toHaveText('Thank you for your order!');
     //скриншот (опционально)
-    await page.locator('body').screenshot({path: 'site_3.png'})
+    //await page.locator('body').screenshot({path: 'site_3.png'})
 });
