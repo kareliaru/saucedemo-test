@@ -20,7 +20,7 @@ test('Оформление заказа с пустой корзиной', async
     await expect(errorMessage).toHaveText('Error: Add items to cart!');
     //скриншот (опционально)
     //await page.locator('body').screenshot({path: 'site_3.png'})
-<<<<<<< HEAD
+
 });
 
->>>>>>> 11f1614 (Обновлены тесты и добавлен README)
+
