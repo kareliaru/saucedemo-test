@@ -1,0 +1,18 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@faker-js/faker": "^9.8.0",
+    "chromedriver": "^129.0.0",
+    "dotenv": "^16.5.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.18"
+  },
+  "scripts": {
+    "test": "npx playwright test",
+    "test:chromium": "BROWSER=chromium npx playwright test",
+    "test:firefox": "BROWSER=firefox npx playwright test",
+    "test:webkit": "BROWSER=webkit npx playwright test"
+  }
+}
