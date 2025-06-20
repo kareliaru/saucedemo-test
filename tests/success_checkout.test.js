@@ -1,37 +1,28 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage.js';
-
+import { InventoryPage } from '../pages/InventoryPage.js';
+import { CartPage } from '../pages/CartPage.js';
+import { CheckoutPage } from '../pages/CheckoutPage.js';
+import { ConfirmationPage } from '../pages/ConfirmationPage.js';
 
 test('Успешное оформление заказа', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    // авторизация
-    await loginPage.goto();
-    await loginPage.login();
+  const loginPage = new LoginPage(page);
+  const inventoryPage = new InventoryPage(page);
+  const cartPage = new CartPage(page);
+  const checkoutPage = new CheckoutPage(page);
+  const confirmationPage = new ConfirmationPage(page);
 
-    // добавление товаров в корзину (рюкзак и худи)
-    await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
-    await page.locator('[data-test="add-to-cart-sauce-labs-fleece-jacket"]').click();
+  await loginPage.goto();
+  await loginPage.login();
 
-    //переход в корзину
-    await page.locator('//a[@class="shopping_cart_link"]').click();
+  await inventoryPage.addItemsToCart();
+  await inventoryPage.goToCart();
 
-    //переход к оформлению заказа 
-    await page.locator('//button[@id="checkout"]').click();
+  await cartPage.proceedToCheckout();
 
-    // заполнение формы
-    await page.locator('[data-test="firstName"]').fill(process.env.FIRST_NAME);
-    await page.locator('[data-test="lastName"]').fill(process.env.LAST_NAME);
-    await page.locator('[data-test="postalCode"]').fill(process.env.ZIP_CODE);
+  await checkoutPage.fillForm(process.env.FIRST_NAME, process.env.LAST_NAME, process.env.ZIP_CODE);
+  await checkoutPage.continue();
+  await checkoutPage.finishOrder();
 
-    //отправка формы
-    await page.locator('[data-test="continue"]').click();
-
-    //завершение оформления заказа
-    await page.locator('[data-test="finish"]').click();
-  
-
-    // проверяем появление заголовка "Успешный заказ"
-    await expect(page.locator('[data-test="complete-header"]')).toHaveText('Thank you for your order!');
-    //скриншот (опционально)
-    //await page.locator('body').screenshot({path: 'site_3.png'})
+  await confirmationPage.checkSuccess();
 });

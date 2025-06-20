@@ -1,26 +1,24 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage.js';
-
+import { CartPage } from '../pages/CartPage.js';
 
 test('Оформление заказа с пустой корзиной', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    // авторизация
-    await loginPage.goto();
-    await loginPage.login();
+  const loginPage = new LoginPage(page);
+  const cartPage = new CartPage(page);
 
-    //переход в корзину без добавления товаров
-    await page.locator('//a[@class="shopping_cart_link"]').click();
+  await loginPage.goto();
+  await loginPage.login();
 
-    //переход к оформлению заказа 
-    await page.locator('//button[@id="checkout"]').click();
+  // Переход в корзину (без добавления товаров)
+  await page.locator('.shopping_cart_link').click();
 
-    // Проверка появления ошибки "Добавьте товары в корзину!"
-    const errorMessage = page.locator('[data-test="error"]');
-    await expect(errorMessage).toBeVisible();
-    await expect(errorMessage).toHaveText('Error: Add items to cart!');
-    //скриншот (опционально)
-    //await page.locator('body').screenshot({path: 'site_3.png'})
+  // Переход к оформлению заказа
+  await cartPage.proceedToCheckout();
 
+  // Проверка ошибки
+  await cartPage.expectErrorVisibleWithText('Error: Add items to cart!');
+
+  // Скриншот (опционально)
+  await page.screenshot({ path: 'empty_cart_error.png' });
 });
-
 

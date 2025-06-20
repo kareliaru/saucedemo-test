@@ -16,3 +16,4 @@ test('Оформлени заказа без авторизации', async ({ p
   // скриншот (опционально)
  // await page.locator('body').screenshot({path: 'site_1.png'})
 });
+
