@@ -1,7 +1,7 @@
  saucedemo-test
 
 Автоматизированные end-to-end тесты для сайта https://www.saucedemo.com, написанные с использованием Playwright (https://playwright.dev/).  
-Проект построен по паттерну **Page Object**, с поддержкой запуска в нескольких браузерах: **Chromium**, **Firefox** и **WebKit**.
+Проект построен по паттерну "Page Object", с поддержкой запуска в нескольких браузерах: Chrome, Firefox и WebKit.
 
 ---
  Установка
@@ -21,7 +21,7 @@ npm install
 npx playwright install
 
 
-4. Необходим .env
+4. Необходим .env (разместить в корне проекта)
 
 USER_NAME=standard_user
 PASSWORD=secret_sauce
