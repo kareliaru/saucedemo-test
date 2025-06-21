@@ -10,7 +10,7 @@ test('Оформление заказа с пустой корзиной', async
   await loginPage.login();
 
   // Переход в корзину (без добавления товаров)
-  await page.locator('.shopping_cart_link').click();
+  await page.locator('[data-test="shopping-cart-link"]').click();
 
   // Переход к оформлению заказа
   await cartPage.proceedToCheckout();
@@ -18,7 +18,7 @@ test('Оформление заказа с пустой корзиной', async
   // Проверка ошибки
   await cartPage.expectErrorVisibleWithText('Error: Add items to cart!');
 
-  // Скриншот (опционально)
- // await page.screenshot({ path: 'empty_cart_error.png' });
+ // скриншот (опционально)
+ // await page.locator('body').screenshot({path: 'site_4.png'})
 });
 

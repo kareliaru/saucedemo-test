@@ -25,4 +25,6 @@ test('Успешное оформление заказа', async ({ page }) => {
   await checkoutPage.finishOrder();
 
   await confirmationPage.checkSuccess();
+  // скриншот (опционально)
+  // await page.locator('body').screenshot({path: 'site.png'})
 });

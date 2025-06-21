@@ -14,4 +14,6 @@ test('Сортировка цен', async ({ page }) => {
 
   const sortedPrices = [...prices].sort((a, b) => a - b);
   expect(prices).toEqual(sortedPrices);
+  // скриншот (опционально)
+  // await page.locator('body').screenshot({path: 'site_1.png'})
 });
