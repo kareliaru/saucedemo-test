@@ -14,16 +14,21 @@ test('Успешное оформление заказа', async ({ page }) => {
 
   await loginPage.goto();
   await loginPage.login();
-
+  // добавление товаров в корзину
   await inventoryPage.addItemsToCart();
+  
+  // переход в корзину
   await inventoryPage.goToCart();
 
-  await cartPage.proceedToCheckout();
-  // 
+  // к оформлению
+  await cartPage.toCheckout();
+
+  // заполняем форму заказа
   await checkoutPage.fillForm();
   await checkoutPage.continue();
   await checkoutPage.finishOrder();
 
+  // подтверждение успешного заказа
   await confirmationPage.checkSuccess();
   // скриншот (опционально)
   // await page.locator('body').screenshot({path: 'site.png'})

@@ -16,7 +16,7 @@ test('Оформление заказа с пустой корзиной', async
   await cartPage.proceedToCheckout();
 
   // Проверка ошибки
-  await cartPage.expectErrorVisibleWithText('Error: Add items to cart!');
+  await cartPage.expectError('Error: Add items to cart!');
 
  // скриншот (опционально)
  // await page.locator('body').screenshot({path: 'site_4.png'})

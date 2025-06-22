@@ -13,6 +13,7 @@ test('Оформлени заказа без авторизации', async ({ p
   const errorMessage = page.locator('[data-test="error"]');
   await expect(errorMessage).toBeVisible();
   await expect(errorMessage).toHaveText("Epic sadface: You can only access '/checkout-step-one.html' when you are logged in.");
+  
   // скриншот (опционально)
   // await page.locator('body').screenshot({path: 'site_3.png'})
 });

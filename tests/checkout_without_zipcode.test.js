@@ -12,16 +12,19 @@ test('Оформление заказа без указания почтовог
 
   await loginPage.goto();
   await loginPage.login();
-
+  // добавление товаров в корзину
   await inventoryPage.addItemsToCart();
+  // переход в корзину
   await inventoryPage.goToCart();
-
-  await cartPage.proceedToCheckout();
-
+  
+  // к оформлению
+  await cartPage.toCheckout();
+  // заполнение формы без индекса
   await checkoutPage.fillFormWithoutZip();
+  // отправка заказа
   await checkoutPage.continue();
 
-  await checkoutPage.expectErrorVisibleWithText('Error: Postal Code is required');
+  await checkoutPage.expectError('Error: Postal Code is required');
   // скриншот (опционально)
   // await page.locator('body').screenshot({path: 'site_2.png'})
 });

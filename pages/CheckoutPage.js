@@ -24,11 +24,11 @@ export class CheckoutPage {
     await this.lastName.fill(lastName);
     
   }
-
+  // отправка заказа
   async continue() {
     await this.continueBtn.click();
   }
-
+   // завершение покупки
   async finishOrder() {
     await this.finishBtn.click();
   }
@@ -39,7 +39,7 @@ export class CheckoutPage {
   }
 
  // проверка ошибки
-  async expectErrorVisibleWithText(expectedText) {
+  async expectError(expectedText) {
     await expect(this.errorMessage).toBeVisible();
     await expect(this.errorMessage).toHaveText(expectedText);
   }
