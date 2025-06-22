@@ -30,6 +30,8 @@ CHECKOUT_URL=https://www.saucedemo.com/checkout-step-one.html
 FIRST_NAME=John
 LAST_NAME=Snow
 ZIP_CODE=123456
+BLOCKED_USER_NAME=locked_out_user
+WRONG_PASSWORD=password
 
 5. Запуск тестов:
 
