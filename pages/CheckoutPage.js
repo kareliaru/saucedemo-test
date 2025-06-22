@@ -11,15 +11,15 @@ export class CheckoutPage {
     this.finishBtn = page.locator('[data-test="finish"]');
     this.errorMessage = page.locator('[data-test="error"]');
   }
-
-  async fillForm(firstName, lastName, zip) {
+  // полное заполнение формы
+  async fillForm(firstName = process.env.FIRST_NAME, lastName = process.env.LAST_NAME, zip = process.env.ZIP_CODE) {
     await this.firstName.fill(firstName);
     await this.lastName.fill(lastName);
     await this.postalCode.fill(zip);
   }
 
   // заполнение формы без индекса
-  async fillFormWithoutZip(firstName, lastName) {
+  async fillFormWithoutZip(firstName = process.env.FIRST_NAME, lastName = process.env.LAST_NAME) {
     await this.firstName.fill(firstName);
     await this.lastName.fill(lastName);
     

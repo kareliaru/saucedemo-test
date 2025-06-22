@@ -8,11 +8,13 @@ test('Сортировка цен', async ({ page }) => {
 
   await loginPage.goto();
   await loginPage.login();
-
+  // вызываем метод для получения массива цен
   await inventoryPage.sortByLowestPrice();
+  // создаем переменную, присваиваем ей результат форматирования массива цен
   const prices = await inventoryPage.getPrices();
-
+  // сортируем полученный массив
   const sortedPrices = [...prices].sort((a, b) => a - b);
+  // сравниваем полученный и отсортированный массивы 
   expect(prices).toEqual(sortedPrices);
   // скриншот (опционально)
   // await page.locator('body').screenshot({path: 'site_1.png'})

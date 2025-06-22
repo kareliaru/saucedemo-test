@@ -19,8 +19,8 @@ test('Успешное оформление заказа', async ({ page }) => {
   await inventoryPage.goToCart();
 
   await cartPage.proceedToCheckout();
-
-  await checkoutPage.fillForm(process.env.FIRST_NAME, process.env.LAST_NAME, process.env.ZIP_CODE);
+  // 
+  await checkoutPage.fillForm();
   await checkoutPage.continue();
   await checkoutPage.finishOrder();
 

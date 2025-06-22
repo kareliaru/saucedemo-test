@@ -18,7 +18,7 @@ export class LoginPage {
   async goto() {
     await this.page.goto(this.baseUrl);
   }
-
+ 
   async login(username = process.env.USER_NAME, password = process.env.PASSWORD) {
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);

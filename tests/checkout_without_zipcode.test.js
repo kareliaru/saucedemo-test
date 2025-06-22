@@ -18,7 +18,7 @@ test('Оформление заказа без указания почтовог
 
   await cartPage.proceedToCheckout();
 
-  await checkoutPage.fillFormWithoutZip(process.env.FIRST_NAME, process.env.LAST_NAME);
+  await checkoutPage.fillFormWithoutZip();
   await checkoutPage.continue();
 
   await checkoutPage.expectErrorVisibleWithText('Error: Postal Code is required');
