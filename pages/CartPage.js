@@ -11,8 +11,8 @@ export class CartPage {
     await this.checkoutBtn.click();
   }
   // ошибка, которая должна появляться при заказе без товара
-  async expectError(expectedText) {
+  async expectError() {
     await expect(this.errorMessage).toBeVisible();
-    await expect(this.errorMessage).toHaveText(expectedText);
+    await expect(this.errorMessage).toHaveText('Error: Add items to cart!');
   }
 }

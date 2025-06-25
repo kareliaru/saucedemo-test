@@ -13,10 +13,10 @@ test('Оформление заказа с пустой корзиной', async
   await page.locator('[data-test="shopping-cart-link"]').click();
 
   // Переход к оформлению заказа
-  await cartPage.proceedToCheckout();
+  await cartPage.toCheckout();
 
   // Проверка ошибки
-  await cartPage.expectError('Error: Add items to cart!');
+  await cartPage.expectError();
 
  // скриншот (опционально)
  // await page.locator('body').screenshot({path: 'site_4.png'})
