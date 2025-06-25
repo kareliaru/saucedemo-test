@@ -25,7 +25,7 @@ export class LoginPage {
     await this.loginButton.click();
   }
 
-  // Метод проверки ошибки при редиректе или ошибках авторизации
+  // Проверка ошибки при заказе без авторизации
   async expectRedirectError() {
     await expect(this.errorMessage).toBeVisible();
     await expect(this.errorMessage).toHaveText(
