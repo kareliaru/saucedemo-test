@@ -1,0 +1,42 @@
+name: Run Playwright Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'trigger.txt'
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      USER_NAME: ${{ secrets.USER_NAME }}
+      PASSWORD: ${{ secrets.PASSWORD }}
+      BASE_URL: ${{ secrets.BASE_URL }}
+      CHECKOUT_URL: ${{ secrets.CHECKOUT_URL }}
+      FIRST_NAME: ${{ secrets.FIRST_NAME }}
+      LAST_NAME: ${{ secrets.LAST_NAME }}
+      ZIP_CODE: ${{ secrets.ZIP_CODE }}
+      BLOCKED_USER_NAME: ${{ secrets.BLOCKED_USER_NAME }}
+      WRONG_PASSWORD: ${{ secrets.WRONG_PASSWORD }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
