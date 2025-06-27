@@ -66,8 +66,9 @@ jobs:
   
       - name: Run Playwright tests and generate HTML report
         run: |
-            npx playwright test --reporter=html
-            echo $? > exit_code.txt
+          set +e
+          npx playwright test --reporter=html
+          echo "TEST_EXIT_CODE=$?" >> $GITHUB_ENV
 
       - name: Upload Playwright HTML report
         uses: actions/upload-artifact@v4
@@ -76,7 +77,4 @@ jobs:
           path: playwright-report/
 
       - name: Fail workflow if tests failed
-        run: |
-              exit $(cat exit_code.txt)
-
-  
+        run: exit $TEST_EXIT_CODE
