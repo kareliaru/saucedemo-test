@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import dotenv from 'dotenv';
 dotenv.config();
-import { LoginPage } from '../pages/loginPage';
+import { LoginPage } from '../pages/LoginPage';
 
 test('Оформлени заказа без авторизации', async ({ page }) => {
   const loginPage = new LoginPage(page);
