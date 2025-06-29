@@ -59,7 +59,10 @@ npm run generate:allure
 
 или здесь: 
 
+
+
 [![Allure Report](https://img.shields.io/badge/Allure-Report-blue?logo=allure&style=flat-square)](https://kareliaru.github.io/saucedemo-test/)
+
 
 
 7. Тест оформления заказа с пустой корзиной фейлится, так как ошибка не обработана и не реализована, в связи с чем, даже без добавления товаров в корзину, оформление заказа не блокируется, что является багом.
