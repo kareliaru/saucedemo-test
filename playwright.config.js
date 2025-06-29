@@ -55,7 +55,13 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  //reporter: 'html',
+  // генерация отчёта для Allure и прогресс в терминале
+  reporter: [
+  ['list'],              
+  ['allure-playwright']   
+],
+
 
   
   projects,

@@ -37,19 +37,23 @@ WRONG_PASSWORD=password
 
 По умолчанию запускаются в трех браузерах (Хром, Файрфокс и Вебкит)
 
-npx playwright test
+npm playwright test
 
 
 Запуск в отдельных браузерах:
 
-npx playwright test --project=chromium  //отдельно Chrome
-npx playwright test --project=firefox   //отдельно Firefox
-npx playwright test --project=webkit	// отдельно Webkit
+npm playwright test --project=chromium  //отдельно Chrome
+npm playwright test --project=firefox   //отдельно Firefox
+npm playwright test --project=webkit	// отдельно Webkit
+
+Запуск отдного теста в трех браузерах: npm playwright test tests/<название теста>
+
+Запуск одного теста в одном браузере: npm playwright test tests/<название теста> -- --project=<название браузера>
 
 
-6. Отчет автоматически генерируется в html и может быть открыт в браузере командой:
+6. Для генерации и вывода отчёта в Allure:
 
-npx playwright show-report
+npm run generate:allure
 
 
 

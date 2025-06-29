@@ -1,17 +1,191 @@
-name: Run Playwright Tests on Trigger File Change
+# name: Run Playwright Tests on Trigger File Change
+
+# on:
+#   push:
+#     branches:
+#       - main
+#     paths:
+#       - 'trigger.txt'
+
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+
+#     env:
+#       USER_NAME: ${{ secrets.USER_NAME }}
+#       PASSWORD: ${{ secrets.PASSWORD }}
+#       BASE_URL: ${{ secrets.BASE_URL }}
+#       CHECKOUT_URL: ${{ secrets.CHECKOUT_URL }}
+#       FIRST_NAME: ${{ secrets.FIRST_NAME }}
+#       LAST_NAME: ${{ secrets.LAST_NAME }}
+#       ZIP_CODE: ${{ secrets.ZIP_CODE }}
+#       BLOCKED_USER_NAME: ${{ secrets.BLOCKED_USER_NAME }}
+#       WRONG_PASSWORD: ${{ secrets.WRONG_PASSWORD }}
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+
+#       - name: Cache node modules
+#         uses: actions/cache@v3
+#         with:
+#           path: ~/.npm
+#           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+#           restore-keys: |
+#             ${{ runner.os }}-node-
+
+#       - name: Install dependencies
+#         run: npm install
+
+#       - name: Cache Playwright browsers
+#         uses: actions/cache@v3
+#         with:
+#           path: ~/.cache/ms-playwright
+#           key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+#           restore-keys: |
+#             ${{ runner.os }}-playwright-
+
+#       - name: Install Playwright Browsers
+#         run: npx playwright install --with-deps
+
+#       # - name: Run Playwright tests
+#       #   run: npx playwright test --reporter=html 
+
+#       # - name: Upload Playwright HTML report
+#       #   uses: actions/upload-artifact@v4
+#       #   with:
+#       #     name: playwright-report
+#       #     path: playwright-report/
+
+# # для сохранения отчета даже при упавших тестах:
+  
+#       - name: Run Playwright tests and generate HTML report
+#         run: |
+#           set +e
+#           npx playwright test --reporter=html
+#           echo "TEST_EXIT_CODE=$?" >> $GITHUB_ENV
+
+#       - name: Upload Playwright HTML report
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: playwright-report
+#           path: playwright-report/
+
+#       - name: Fail workflow if tests failed
+#         run: exit $TEST_EXIT_CODE
+
+
+# name: Run Playwright Tests on Trigger File Change 
+
+# on:
+#   push:
+#     branches:
+#       - main        
+#     paths:            # Запускать workflow при пушах в ветку main
+#       - 'trigger.txt' # Только если изменён файл trigger.txt 
+
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest  # Использовать виртуальную машину с Ubuntu
+
+#     env:                     # Передача секретов окружения для тестов
+#       USER_NAME: ${{ secrets.USER_NAME }}
+#       PASSWORD: ${{ secrets.PASSWORD }}
+#       BASE_URL: ${{ secrets.BASE_URL }}
+#       CHECKOUT_URL: ${{ secrets.CHECKOUT_URL }}
+#       FIRST_NAME: ${{ secrets.FIRST_NAME }}
+#       LAST_NAME: ${{ secrets.LAST_NAME }}
+#       ZIP_CODE: ${{ secrets.ZIP_CODE }}
+#       BLOCKED_USER_NAME: ${{ secrets.BLOCKED_USER_NAME }}
+#       WRONG_PASSWORD: ${{ secrets.WRONG_PASSWORD }}
+
+#     steps:  # Клонирование репозитория, чтобы получить исходники и тесты
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+        
+#   # Установка Node.js версии 20 для запуска тестов и npm
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+        
+#   # Кэширование npm пакетов для ускорения установки зависимостей
+#       - name: Cache node modules
+#         uses: actions/cache@v3
+#         with:
+#           path: ~/.npm
+#           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+#           restore-keys: |
+#             ${{ runner.os }}-node-
+        
+#   # Установка зависимостей 
+#       - name: Install dependencies
+#         run: npm install
+        
+#   # Кэширование браузеров Playwright для ускорения запуска
+#       - name: Cache Playwright browsers
+#         uses: actions/cache@v3
+#         with:
+#           path: ~/.cache/ms-playwright
+#           key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+#           restore-keys: |
+#             ${{ runner.os }}-playwright-
+        
+#  # Установка необходимых браузеров Playwright и системных зависимостей
+
+#       - name: Install Playwright Browsers
+#         run: npx playwright install --with-deps
+       
+#       #  запуск и загрузка отчёта без сохранения результата:  
+#       # (при упавших тестах флоу помечается как "успешный")
+
+#       # - name: Run Playwright tests
+#       #   run: npx playwright test --reporter=html 
+
+#       # - name: Upload Playwright HTML report
+#       #   uses: actions/upload-artifact@v4
+#       #   with:
+#       #     name: playwright-report
+#       #     path: playwright-report/
+
+#       # Запуск тестов с генерацией HTML-отчёта, даже если тесты падают
+#       - name: Run Playwright tests and generate HTML report
+#         run: |
+#           set +e                     # Позволяет продолжать выполнение даже если команда упала
+#           npx playwright test --reporter=html  # Запуск тестов с генерацией HTML-отчёта
+#           echo "TEST_EXIT_CODE=$?" >> $GITHUB_ENV  # Сохраняем код возврата (0 - успех, 1 - ошибки)
+
+#       - name: Upload Playwright HTML report
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: playwright-report     # Имя артефакта в Actions
+#           path: playwright-report/   
+
+#       - name: Fail workflow if tests failed
+#         run: exit $TEST_EXIT_CODE
+#         # Завершаем workflow с кодом возврата тестов,
+#         # чтобы при упавших тестах флоу тоже помечался как failed
+
+
+name: Run Playwright Tests on Trigger File Change 
 
 on:
   push:
     branches:
-      - main
-    paths:
-      - 'trigger.txt'
+      - main        
+    paths:            # Запускать workflow при пушах в ветку main
+      - 'trigger.txt' # Только если изменён файл trigger.txt 
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Использовать виртуальную машину с Ubuntu
 
-    env:
+    env:                     # Передача секретов окружения для тестов
       USER_NAME: ${{ secrets.USER_NAME }}
       PASSWORD: ${{ secrets.PASSWORD }}
       BASE_URL: ${{ secrets.BASE_URL }}
@@ -23,26 +197,26 @@ jobs:
       WRONG_PASSWORD: ${{ secrets.WRONG_PASSWORD }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repository          # Клонирование репозитория
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
+        
+      - name: Setup Node.js                # Установка Node.js для запуска тестов
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
-      - name: Cache node modules
+        
+      - name: Cache node modules           # Кэширование npm пакетов
         uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-
-      - name: Install dependencies
+        
+      - name: Install dependencies         # Установка зависимостей проекта
         run: npm install
-
-      - name: Cache Playwright browsers
+        
+      - name: Cache Playwright browsers    # Кэширование браузеров Playwright
         uses: actions/cache@v3
         with:
           path: ~/.cache/ms-playwright
@@ -50,31 +224,34 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-playwright-
 
-      - name: Install Playwright Browsers
+      - name: Install Playwright Browsers  # Установка браузеров и системных зависимостей
         run: npx playwright install --with-deps
 
-      # - name: Run Playwright tests
-      #   run: npx playwright test --reporter=html 
-
-      # - name: Upload Playwright HTML report
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: playwright-report
-      #     path: playwright-report/
-
-# для сохранения отчета даже при упавших тестах:
-  
-      - name: Run Playwright tests and generate HTML report
+      # Запуск тестов с генерацией Allure-отчёта даже при упавших тестах
+      - name: Run Playwright tests and collect Allure results
         run: |
-          set +e
-          npx playwright test --reporter=html
-          echo "TEST_EXIT_CODE=$?" >> $GITHUB_ENV
+          set +e                                  # Продолжить выполнение даже при ошибках
+          npx playwright test                     # Запустить тесты
+          echo "TEST_EXIT_CODE=$?" >> $GITHUB_ENV # Сохранить код завершения тестов
 
-      - name: Upload Playwright HTML report
+      - name: Generate Allure HTML Report         # Сгенерировать отчёт Allure
+        run: |
+          npx allure generate allure-results --clean -o allure-report
+
+      - name: Upload Allure HTML Report           # Загрузить отчёт как артефакт
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
-          path: playwright-report/
+          name: allure-report
+          path: allure-report/
 
-      - name: Fail workflow if tests failed
+      - name: Fail workflow if tests failed       # Завершить workflow со статусом failed, если тесты не прошли
         run: exit $TEST_EXIT_CODE
+
+                                                  # опубликовать отчет Allure на GH Pages
+      - name: Deploy Allure Report to GitHub Pages  
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
+          destination_dir: allure-report
