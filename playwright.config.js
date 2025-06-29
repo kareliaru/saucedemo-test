@@ -1,17 +1,4 @@
-// // playwright.config.js
-// import { defineConfig } from '@playwright/test';
 
-// export default defineConfig({
-//   testDir: './tests',
-//   reporter: "html",
-//   use: {
-//     headless: true,
-//     baseURL: 'https://www.saucedemo.com',
-//     screenshot: 'only-on-failure',    
-//   },
-// });
-
-// @ts-check
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
