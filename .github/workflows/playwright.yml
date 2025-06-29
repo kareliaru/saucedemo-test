@@ -62,9 +62,6 @@ jobs:
           npx playwright test --config=playwright.config.js
           echo "TEST_EXIT_CODE=$?" >> $GITHUB_ENV
 
-
-      - name: Debug allure-results content
-        run: ls -R allure-results
         
       - name: Generate Allure HTML Report         # Сгенерировать отчёт Allure
         run: |
