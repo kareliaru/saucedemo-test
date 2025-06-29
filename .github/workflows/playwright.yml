@@ -230,10 +230,13 @@ jobs:
       # Запуск тестов с генерацией Allure-отчёта даже при упавших тестах
       - name: Run Playwright tests and collect Allure results
         run: |
-          set +e                                  # Продолжить выполнение даже при ошибках
-          npx playwright test                     # Запустить тесты
-          echo "TEST_EXIT_CODE=$?" >> $GITHUB_ENV # Сохранить код завершения тестов
+          set +e                                   
+          npx playwright test                      
+          echo "TEST_EXIT_CODE=$?" >> $GITHUB_ENV  
 
+      - name: Debug allure-results content
+        run: ls -R allure-results
+        
       - name: Generate Allure HTML Report         # Сгенерировать отчёт Allure
         run: |
           npx allure generate allure-results --clean -o allure-report
