@@ -46,9 +46,13 @@ npm playwright test --project=chromium  //отдельно Chrome
 npm playwright test --project=firefox   //отдельно Firefox
 npm playwright test --project=webkit	// отдельно Webkit
 
-Запуск отдного теста в трех браузерах: npm playwright test tests/<название теста>
+Запуск отдного теста в трех браузерах:
 
-Запуск одного теста в одном браузере: npm playwright test tests/<название теста> -- --project=<название браузера>
+ npm playwright test tests/<название теста>
+
+Запуск одного теста в одном браузере: 
+
+npm playwright test tests/<название теста> -- --project=<название браузера>
 
 
 6. Для генерации и вывода отчёта в Allure:
