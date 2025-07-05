@@ -3,10 +3,16 @@ name: Run Playwright Tests on Trigger File Change
 on:
   push:
     branches:
-      - main        
+      - develop
+      - master        
     paths:            # Запускать workflow при пушах в ветку main
       - 'trigger.txt' # Только если изменён файл trigger.txt 
-
+  pull_request:
+    branches:
+      - develop
+      - master     
+    paths:            
+      - 'trigger.txt'
 jobs:
   test:
     runs-on: ubuntu-latest  # Использовать виртуальную машину с Ubuntu
