@@ -24,13 +24,21 @@ npx playwright install
 4. Необходим .env (разместить в корне проекта)
 
 USER_NAME=standard_user
+
 PASSWORD=secret_sauce
+
 BASE_URL=https://www.saucedemo.com
+
 CHECKOUT_URL=https://www.saucedemo.com/checkout-step-one.html 
+
 FIRST_NAME=John
+
 LAST_NAME=Snow
+
 ZIP_CODE=123456
+
 BLOCKED_USER_NAME=locked_out_user
+
 WRONG_PASSWORD=password
 
 5. Запуск тестов:
@@ -43,7 +51,9 @@ npm playwright test
 Запуск в отдельных браузерах:
 
 npm playwright test --project=chromium  //отдельно Chrome
+
 npm playwright test --project=firefox   //отдельно Firefox
+
 npm playwright test --project=webkit	// отдельно Webkit
 
 Запуск отдного теста в трех браузерах:
