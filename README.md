@@ -86,7 +86,7 @@ npm run generate:allure
 
 8.  CI: автоматический запуск тестов через GitHub Actions
 
-При каждом push в файл `trigger.txt` в ветке `main` автоматически запускается CI-пайплайн с помощью [GitHub Actions](https://docs.github.com/actions).  
+При каждом push в файл `trigger.txt` в ветке `develop` автоматически запускается CI-пайплайн с помощью [GitHub Actions](https://docs.github.com/actions).  
 Этот пайплайн:
 
 - устанавливает зависимости и браузеры,
@@ -102,4 +102,4 @@ npm run generate:allure
 echo "Запуск тестов" >> trigger.txt
 git add trigger.txt
 git commit -m "CI: запуск тестов"
-git push origin main
+git push origin develop
