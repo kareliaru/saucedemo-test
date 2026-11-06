@@ -1,33 +1,36 @@
-/* страница товаров /
- добавление товаров в корзину*/
- 
 export class InventoryPage {
+  /** @param {import('@playwright/test').Page} page */
   constructor(page) {
     this.page = page;
-    this.backpack = page.locator('[data-test="add-to-cart-sauce-labs-backpack"]');
-    this.jacket = page.locator('[data-test="add-to-cart-sauce-labs-fleece-jacket"]');
-    this.cartLink = page.locator('[data-test="shopping-cart-link"]');
-    this.sortingPrises = page.locator('.product_sort_container');
+    this.backpack = page.getByTestId('add-to-cart-sauce-labs-backpack');
+    this.jacket = page.getByTestId('add-to-cart-sauce-labs-fleece-jacket');
+    this.cartLink = page.getByTestId('shopping-cart-link');
+    // Общие локаторы каталога используются и в тестах, и в фикстуре.
+    this.inventoryItems = page.locator('.inventory_item');
+    this.cartBadge = page.getByTestId('shopping-cart-badge');
+    this.sortingPrices = page.locator('.product_sort_container');
     this.priceList = page.locator('.inventory_item_price');
+  }
+
+  // Открывает каталог. Наличие авторизации проверяет вызывающий код.
+  async goto() {
+    await this.page.goto('/inventory.html', { waitUntil: 'domcontentloaded' });
   }
 
   async addItemsToCart() {
     await this.backpack.click();
     await this.jacket.click();
   }
- // переход в корзину
+
   async goToCart() {
     await this.cartLink.click();
   }
-    // сортируем по возрастанию цен через селект
+
   async sortByLowestPrice() {
-    await this.sortingPrises.selectOption('lohi');
+    await this.sortingPrices.selectOption('lohi');
   }
-    // получаем массив цен . 
+
   async getPrices() {
-    const priceTexts = await this.priceList.allTextContents();
-    // убираем знак $ и преобразуем строки в числа
-    return priceTexts.map(price => parseFloat(price.replace('$', '')));
+    return (await this.priceList.allTextContents()).map(price => Number(price.replace('$', '').trim()));
   }
 }
-

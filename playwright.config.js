@@ -1,40 +1,5 @@
-
 import { defineConfig, devices } from '@playwright/test';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-// Для __dirname в ESM:
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// .env
-dotenv.config({ path: path.resolve(__dirname, '.env') });
-
-const BROWSER = process.env.BROWSER || 'all';
-
-const projects = [];
-
-if (BROWSER === 'chromium' || BROWSER === 'all') {
-  projects.push({
-    name: 'chromium',
-    use: { ...devices['Desktop Chrome'] },
-  });
-}
-
-if (BROWSER === 'firefox' || BROWSER === 'all') {
-  projects.push({
-    name: 'firefox',
-    use: { ...devices['Desktop Firefox'] },
-  });
-}
-
-if (BROWSER === 'webkit' || BROWSER === 'all') {
-  projects.push({
-    name: 'webkit',
-    use: { ...devices['Desktop Safari'] },
-  });
-}
+import { env } from './config/env.js';
 
 export default defineConfig({
   testDir: './tests',
@@ -42,20 +7,17 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  //reporter: 'html',
-  // генерация отчёта для Allure и прогресс в терминале
-  reporter: [
-  ['list'],              
-  ['allure-playwright']   
-],
-
-
-  
-  projects,
-
+  reporter: [['list'], ['html', { open: 'never' }], ['allure-playwright']],
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+  ],
   use: {
-    trace: 'on-first-retry',
-    headless: true,
+    baseURL: env.BASE_URL,
+    testIdAttribute: 'data-test',
+    headless: false,
+    trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
 });

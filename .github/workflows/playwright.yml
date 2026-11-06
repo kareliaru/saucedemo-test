@@ -1,92 +1,61 @@
-name: Run Playwright Tests on Trigger File Change 
+name: Playwright Tests
 
 on:
   push:
-    branches:
-      - develop
-      - master        
-    paths:            # Запускать workflow при пушах в ветку develop
-      - 'trigger.txt' # Только если изменён файл trigger.txt 
+    branches: [develop, master]
   pull_request:
-    branches:
-      - develop
-      - master     
-      
+    branches: [develop, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
 jobs:
   test:
-    runs-on: ubuntu-latest  # Использовать виртуальную машину с Ubuntu
-
-    env:                     # Передача секретов окружения для тестов
-      USER_NAME: ${{ secrets.USER_NAME }}
-      PASSWORD: ${{ secrets.PASSWORD }}
-      BASE_URL: ${{ secrets.BASE_URL }}
-      CHECKOUT_URL: ${{ secrets.CHECKOUT_URL }}
-      FIRST_NAME: ${{ secrets.FIRST_NAME }}
-      LAST_NAME: ${{ secrets.LAST_NAME }}
-      ZIP_CODE: ${{ secrets.ZIP_CODE }}
-      BLOCKED_USER_NAME: ${{ secrets.BLOCKED_USER_NAME }}
-      WRONG_PASSWORD: ${{ secrets.WRONG_PASSWORD }}
-
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BASE_URL: https://www.saucedemo.com/
+      USER_NAME: standard_user
+      PASSWORD: secret_sauce
+      FIRST_NAME: John
+      LAST_NAME: Snow
+      ZIP_CODE: '123456'
+      BLOCKED_USER_NAME: locked_out_user
+      WRONG_PASSWORD: wrong_password
     steps:
-      - name: Checkout repository          # Клонирование репозитория
-        uses: actions/checkout@v4
-        
-      - name: Setup Node.js                # Установка Node.js для запуска тестов
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-        
-      - name: Cache node modules           # Кэширование npm пакетов
-        uses: actions/cache@v3
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-java@v4
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-        
-      - name: Install dependencies         # Установка зависимостей проекта
-        run: npm install
-        
-      - name: Cache Playwright browsers    # Кэширование браузеров Playwright
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-
-      - name: Install Playwright Browsers  # Установка браузеров и системных зависимостей
+          distribution: temurin
+          java-version: '17'
+      - name: Install dependencies
+        run: npm ci
+      - name: Install browsers and system dependencies
         run: npx playwright install --with-deps
-
-      # Запуск тестов с генерацией Allure-отчёта даже при упавших тестах
-     
-      - name: Run Playwright tests and collect Allure results
-        run: |
-          npx rimraf allure-results allure-report
-          set +e
-          npx playwright test --config=playwright.config.js
-          echo "TEST_EXIT_CODE=$?" >> $GITHUB_ENV
-
-        
-      - name: Generate Allure HTML Report         # Сгенерировать отчёт Allure
-        run: |
-          npx allure generate allure-results --clean -o allure-report
-
-      - name: Upload Allure HTML Report           # Загрузить отчёт как артефакт
+      - name: Run tests
+        run: npm test
+      - name: Generate Allure report
+        if: ${{ !cancelled() }}
+        run: npm run generate:allure
+      - name: Save reports and diagnostics
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: allure-report
-          path: allure-report/
-
-      - name: Fail workflow if tests failed       # Завершить workflow со статусом failed, если тесты не прошли
-        run: exit $TEST_EXIT_CODE
-
-                                                  # опубликовать отчет Allure на GH Pages
-      - name: Deploy Allure Report to GitHub Pages
-        if: always()
+          name: playwright-results
+          path: |
+            allure-results/
+            allure-report/
+            playwright-report/
+            test-results/
+          retention-days: 14
+      - name: Publish Allure to GitHub Pages
+        if: ${{ !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.GH_PAGES_TOKEN }}
           publish_dir: ./allure-report
-
-

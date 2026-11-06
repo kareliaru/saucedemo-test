@@ -1,46 +1,46 @@
-// // класс оформления заказа
 import { expect } from '@playwright/test';
+import { env } from '../config/env.js';
+import { expectOrderItems } from './orderAssertions.js';
 
 export class CheckoutPage {
+  /** @param {import('@playwright/test').Page} page */
   constructor(page) {
     this.page = page;
-    this.firstName = page.locator('[data-test="firstName"]');
-    this.lastName = page.locator('[data-test="lastName"]');
-    this.postalCode = page.locator('[data-test="postalCode"]');
-    this.continueBtn = page.locator('[data-test="continue"]');
-    this.finishBtn = page.locator('[data-test="finish"]');
-    this.errorMessage = page.locator('[data-test="error"]');
+    this.firstName = page.getByTestId('firstName');
+    this.lastName = page.getByTestId('lastName');
+    this.postalCode = page.getByTestId('postalCode');
+    this.continueBtn = page.getByTestId('continue');
+    this.finishBtn = page.getByTestId('finish');
+    this.errorMessage = page.getByTestId('error');
   }
-  // полное заполнение формы
-  async fillForm(firstName = process.env.FIRST_NAME, lastName = process.env.LAST_NAME, zip = process.env.ZIP_CODE) {
+
+  async fillForm(firstName = env.FIRST_NAME, lastName = env.LAST_NAME, zip = env.ZIP_CODE) {
     await this.firstName.fill(firstName);
     await this.lastName.fill(lastName);
     await this.postalCode.fill(zip);
   }
 
-  // заполнение формы без индекса
-  async fillFormWithoutZip(firstName = process.env.FIRST_NAME, lastName = process.env.LAST_NAME) {
-    await this.firstName.fill(firstName);
-    await this.lastName.fill(lastName);
-    
-  }
-  // отправка заказа
   async continue() {
     await this.continueBtn.click();
   }
-   // завершение покупки
+
   async finishOrder() {
     await this.finishBtn.click();
   }
 
- // получение текста ошибки
-  async getErrorMessage() {
-    return await this.errorMessage.textContent();
+  async expectError(expectedText) {
+    await expect(this.errorMessage).toHaveText(expectedText);
+    await expect(this.page).toHaveURL(/\/checkout-step-one\.html$/);
   }
 
- // проверка ошибки
-  async expectError(expectedText) {
-    await expect(this.errorMessage).toBeVisible();
-    await expect(this.errorMessage).toHaveText(expectedText);
+  async expectOverview(items) {
+    await expect(this.page).toHaveURL(/\/checkout-step-two\.html$/);
+    await expectOrderItems(this.page.locator('.cart_item'), items);
+    const subtotal = items.reduce((sum, item) => sum + Math.round(item.price * 100) * item.quantity, 0);
+    // SauceDemo sales tax: 8%, rounded to cents.
+    const tax = Math.round(subtotal * 0.08);
+    await expect(this.page.locator('.summary_subtotal_label')).toHaveText(`Item total: $${(subtotal / 100).toFixed(2)}`);
+    await expect(this.page.locator('.summary_tax_label')).toHaveText(`Tax: $${(tax / 100).toFixed(2)}`);
+    await expect(this.page.locator('.summary_total_label')).toHaveText(`Total: $${((subtotal + tax) / 100).toFixed(2)}`);
   }
 }

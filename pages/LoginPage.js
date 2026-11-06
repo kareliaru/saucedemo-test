@@ -1,75 +1,29 @@
- // класс авторизации
-
 import { expect } from '@playwright/test';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { env } from '../config/env.js';
 
 export class LoginPage {
+  /** @param {import('@playwright/test').Page} page */
   constructor(page) {
     this.page = page;
-    this.baseUrl = process.env.BASE_URL;
-    this.usernameInput = page.locator('[data-test="username"]');
-    this.passwordInput = page.locator('[data-test="password"]');
-    this.loginButton = page.locator('[data-test="login-button"]');
-    this.errorMessage = page.locator('[data-test="error"]'); 
+    this.usernameInput = page.getByTestId('username');
+    this.passwordInput = page.getByTestId('password');
+    this.loginButton = page.getByTestId('login-button');
+    this.errorMessage = page.getByTestId('error');
   }
 
   async goto() {
-    await this.page.goto(this.baseUrl);
+    await this.page.goto('/');
   }
- 
-  async login(username = process.env.USER_NAME, password = process.env.PASSWORD) {
+
+  async login(username = env.USER_NAME, password = env.PASSWORD) {
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
     await this.loginButton.click();
   }
 
-  // Проверка ошибки при заказе без авторизации
-  async expectRedirectError() {
-    await expect(this.errorMessage).toBeVisible();
-    await expect(this.errorMessage).toHaveText(
-      "Epic sadface: You can only access '/checkout-step-one.html' when you are logged in."
-    );
-  }
-  // логин заблокированным юзером
-  async blockedUserLogin (blocked_username = process.env.BLOCKED_USER_NAME, password = process.env.PASSWORD) {
-    await this.usernameInput.fill(blocked_username);
-    await this.passwordInput.fill(password);
-    await this.loginButton.click()
-  }
-  // логин с не верным пароль
-  async incorrectPasswordLogin (username = process.env.USER_NAME, password = process.env.WRONG_PASSWORD) {
-    await this.usernameInput.fill(username);
-    await this.passwordInput.fill(password);
-    await this.loginButton.click()
-  }
-  // авторизация без указания юзернейм
-  async whithOutUserNameLogin (_ ,password = process.env.PASSWORD ) {
-    await this.passwordInput.fill(password);
-    await this.loginButton.click()
-  }
-
-  // проверка ошибки при не верном  логин или пароль
-  async incorrectPasswordError () {
-       await expect(this.errorMessage).toBeVisible();
-    await expect(this.errorMessage).toHaveText(
-      "Epic sadface: Username and password do not match any user in this service"
-    );
-  }
-  
-  //проверка ошибки авторизации заблокированного юзера
-  async expectBlockedUserError() {
-    await expect(this.errorMessage).toBeVisible();
-    await expect(this.errorMessage).toHaveText(
-      "Epic sadface: Sorry, this user has been locked out."
-    );
-  }
-  //проверка ошибки при отсутствия имени пользователя
-  async whithOutUserNameError() {
-    await expect(this.errorMessage).toBeVisible();
-    await expect(this.errorMessage).toHaveText(
-      "Epic sadface: Username is required"
-    );
+  async expectError(message) {
+    await expect(this.errorMessage).toHaveText(message);
+    await expect(this.page).toHaveURL(new URL('/', env.BASE_URL).href);
+    await expect(this.loginButton).toBeVisible();
   }
 }

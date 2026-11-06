@@ -1,105 +1,77 @@
- saucedemo-test
+# SauceDemo tests
 
-Автоматизированные end-to-end тесты для сайта https://www.saucedemo.com, написанные с использованием Playwright (https://playwright.dev/).  
-Проект построен по паттерну "Page Object", с поддержкой запуска в нескольких браузерах: Chrome, Firefox и WebKit.
+End-to-end тесты https://www.saucedemo.com на Playwright с Page Object.
 
----
- Установка
+## Установка
 
-1. Клонируй репозиторий:
+Требуются Node.js 22+ и Java 17+ для Allure CLI.
 
-git clone https://github.com/kareliaru/saucedemo-test.git
-
-cd saucedemo-test
-
-2. Зависимости:
-
-npm install
-
-3. Установи браузеры Playwright (если не установлены)
-
+```sh
+npm ci
 npx playwright install
+```
 
+Скопируйте `.env.example` в `.env` и при необходимости измените данные.
+Это публичные демонстрационные учётные данные SauceDemo. Настоящие секреты
+не добавляйте в репозиторий. Переменные окружения имеют приоритет над `.env`.
+Недостающие обязательные переменные проверяются до запуска тестов.
+`CHECKOUT_URL` не нужен: адрес оформления строится относительно `BASE_URL`.
 
-4. Необходим .env (разместить в корне проекта)
+## Запуск
 
-USER_NAME=standard_user
+```sh
+npm test
+npm run test:chromium
+npm run test:firefox
+npm run test:webkit
+npx playwright test tests/sorted-prices.spec.js --project=chromium
+npx playwright test --project=chromium --headed
+```
 
-PASSWORD=secret_sauce
+По умолчанию запускаются все три браузера без видимого окна.
+Браузер выбирается через `--project`; переменная `BROWSER` больше не используется.
+Трассы и скриншоты сохраняются для упавших тестов в `test-results/`.
 
-BASE_URL=https://www.saucedemo.com
-
-CHECKOUT_URL=https://www.saucedemo.com/checkout-step-one.html 
-
-FIRST_NAME=John
-
-LAST_NAME=Snow
-
-ZIP_CODE=123456
-
-BLOCKED_USER_NAME=locked_out_user
-
-WRONG_PASSWORD=password
-
-5. Запуск тестов:
-
-По умолчанию запускаются в трех браузерах (Хром, Файрфокс и Вебкит)
-
-npm playwright test
-
-
-Запуск в отдельных браузерах:
-
-npm playwright test --project=chromium  //отдельно Chrome
-
-npm playwright test --project=firefox   //отдельно Firefox
-
-npm playwright test --project=webkit	// отдельно Webkit
-
-Запуск отдного теста в трех браузерах:
-
- npm playwright test tests/<название теста>
-
-Запуск одного теста в одном браузере: 
-
-npm playwright test tests/<название теста> -- --project=<название браузера>
-
-
-6. Для генерации и вывода отчёта в Allure:
-
+```sh
+npx playwright show-report
+npm run test:allure -- --project=chromium
 npm run generate:allure
+npm run open:allure
+```
 
-отчет доступен по ссылке:  https://kareliaru.github.io/saucedemo-test/
+`test:allure` очищает старые результаты, запускает тесты и генерирует отчёт
+даже при их падении, сохраняя ненулевой код завершения. Обычные запуски
+не очищают Allure: для отдельного отчёта используйте `test:allure`.
 
-или здесь: 
+## Фикстура авторизации
 
+Сортировка и авторизованные сценарии заказа импортируют `test` и `expect`
+из `fixtures/auth.fixture.js`. Фикстура входит один раз на рабочий процесс,
+сохраняет cookies/localStorage в памяти и перед каждым тестом открывает каталог
+в новом изолированном контексте. Корзина между тестами не переносится.
+При новом запуске или пересоздании процесса после ошибки авторизация повторяется.
 
+Тесты входа используют стандартный `test` из `@playwright/test`.
+Гостевой сценарий в `checkout.spec.js` использует тот же стандартный тест
+под именем `guestTest`, поэтому не получает авторизацию из фикстуры.
+Подробные комментарии к каждому этапу находятся в `fixtures/auth.fixture.js`.
 
-[![Allure Report](https://img.shields.io/badge/Allure-Report-blue?logo=allure&style=flat-square)](https://kareliaru.github.io/saucedemo-test/)
+## Покрытие
 
+Восемь сценариев: три ошибки входа, доступ к оформлению без авторизации,
+проверка индекса, сортировка цен, успешный заказ и запрет оформления пустой корзины.
+Успешный заказ проверяет названия, цены и количество товаров в корзине и
+обзоре заказа, сумму, налог 8% с округлением до центов и итоговую стоимость.
+Сортировка проверяет шесть товаров и сохранение полного набора цен.
 
+Известный дефект пустой корзины и правила ожидаемого падения описаны в [BUGS.md](BUGS.md).
 
-7. Тест оформления заказа с пустой корзиной фейлится, так как ошибка не обработана и не реализована, в связи с чем, даже без добавления товаров в корзину, оформление заказа не блокируется, что является багом.
-После фикса необходимо доработать тест- добавить обработку ошибки для корректного прохождения теста.
+## CI
 
-
-
-8.  CI: автоматический запуск тестов через GitHub Actions
-
-При каждом push в файл `trigger.txt` в ветке `develop` автоматически запускается CI-пайплайн с помощью [GitHub Actions](https://docs.github.com/actions).  
-Этот пайплайн:
-
-- устанавливает зависимости и браузеры,
-- кэширует их для ускорения следующих запусков,
-- запускает все Playwright-тесты,
-- сохраняет HTML-отчёт с результатами (скачиваемый в разделе **Actions > Artifacts** на GitHub).
-
-Это позволяет проверять стабильность тестов без запуска локально.  
-Файл `trigger.txt` можно использовать как триггер: изменяй и пушь его, чтобы инициировать проверку.
-
-Пример использования:
-```bash
-echo "Запуск тестов" >> trigger.txt
-git add trigger.txt
-git commit -m "CI: запуск тестов"
-git push origin develop
+GitHub Actions запускается на push и pull request в develop/master, а также вручную.
+Использует `npm ci`, устанавливает три браузера и сохраняет отчёты, трассы
+и скриншоты как артефакт `playwright-results`, в том числе при падении тестов.
+Публичные тестовые данные заданы в workflow, поэтому PR из fork не требуют секретов.
+Публикация Allure в GitHub Pages выполняется только при push в master
+и требует существующего секрета `GH_PAGES_TOKEN` с доступом к публикации.
+Локальное редактирование workflow само по себе ничего не публикует.
