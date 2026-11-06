@@ -16,7 +16,7 @@ export default defineConfig({
   use: {
     baseURL: env.BASE_URL,
     testIdAttribute: 'data-test',
-    headless: false,
+    headless: !!process.env.CI,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
